@@ -1,0 +1,231 @@
+---
+/**
+ * Sport w TV — TV Wieczór (tvwieczor.pl)
+ * Transmisje sportowe na żywo w otwartych kanałach telewizji naziemnej DVB-T2.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ProgramOverlay from '../components/ProgramOverlay.astro';
+import MoodPickerModal from '../components/MoodPickerModal.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInPoland, formatDatePL, formatTimePL } from '../utils/timeSlots';
+import { isSport } from '../utils/programClassifier';
+import { getFallbackImageForProgram, getCleanProgramImage } from '../utils/programImages';
+import type { Channel, Program } from '../types';
+
+const today = getTodayInPoland();
+const dateLabel = formatDatePL(today);
+
+interface SportListing {
+  program: Program;
+  channel: Channel;
+  slug: string;
+}
+
+let sportListings: SportListing[] = [];
+
+try {
+  const [channels, allPrograms] = await Promise.all([
+    fetchChannels(),
+    fetchProgramsForDate(today),
+  ]);
+
+  const channelMap = new Map<string, Channel>();
+  for (const ch of channels) {
+    channelMap.set(ch.id, ch);
+  }
+
+  for (const prog of allPrograms) {
+    const slug = prog.channel_id ?? '';
+    const ch = channelMap.get(slug);
+    if (!ch) continue;
+
+    if (isSport(prog.category, prog.title, prog.description)) {
+      sportListings.push({
+        program: prog,
+        channel: ch,
+        slug,
+      });
+    }
+  }
+
+  sportListings.sort((a, b) => new Date(a.program.start_time).getTime() - new Date(b.program.start_time).getTime());
+} catch (err) {
+  console.error('[sport.astro] Error fetching sport listings:', err);
+}
+
+const pageTitle = "Sport w TV dzisiaj | Transmisje na żywo w TVP Sport i DVB-T2";
+const pageDesc = "Sprawdź mecze i transmisje sportowe dzisiaj w telewizji. Piłka nożna, skoki narciarskie, siatkówka, żużel i boks na żywo w TVP Sport, TVP 1 i Polsat.";
+const keywords = "sport w tv, sport dzisiaj w tv, mecze dzisiaj w tv, tvp sport program, siatkówka w tv, skoki narciarskie program tv, ekstraklasa w tv";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Transmisje sportowe dzisiaj w TV",
+  "description": pageDesc,
+  "inLanguage": "pl-PL",
+  "itemListElement": sportListings.slice(0, 15).map((s, idx) => ({
+    "@type": "ListItem",
+    "position": idx + 1,
+    "item": {
+      "@type": "SportsEvent",
+      "name": s.program.title,
+      "startDate": s.program.start_time,
+      "description": s.program.description
+    }
+  }))
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDesc} keywords={keywords} jsonLd={jsonLd}>
+  <Header />
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <!-- Hero / Headline Bar -->
+    <div class="mb-8 border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-3">
+          <span>🏆 Sport na żywo</span>
+          <span>•</span>
+          <span>{dateLabel}</span>
+          <span>•</span>
+          <span class="text-white font-bold">{sportListings.length} transmisji w DVB-T2</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Sport <span class="text-emerald-400">w TV dzisiaj</span>
+        </h1>
+        <p class="text-base text-slate-400 mt-2 max-w-2xl">
+          Transmisje meczów, magazyny i skróty sportowe w bezpłatnych kanałach telewizyjnych.
+        </p>
+      </div>
+
+      <!-- Quick Nav -->
+      <div class="flex items-center gap-2">
+        <a 
+          href="/" 
+          class="px-4 py-2 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-colors flex items-center gap-1.5"
+        >
+          <span>🌙</span>
+          <span>Hit Wieczoru</span>
+        </a>
+        <a 
+          href="/teraz/" 
+          class="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold transition-colors flex items-center gap-1.5"
+        >
+          <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+          <span>Teraz w TV</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Sport Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {sportListings.map(({ program, channel, slug }) => {
+        const timeFormatted = formatTimePL(program.start_time);
+        const cleanImg = getCleanProgramImage(program.image_url, program.title, program.category);
+        const fallbackImg = getFallbackImageForProgram(program.title, program.category);
+
+        return (
+          <div 
+            class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all duration-200 shadow-lg flex flex-col justify-between cursor-pointer group"
+            data-program-id={program.id}
+            data-title={program.title}
+            data-desc={program.description}
+            data-category={program.category}
+            data-start={program.start_time}
+            data-end={program.end_time}
+            data-imdb={program.imdb_rating}
+            data-image={cleanImg}
+            data-channel-slug={slug}
+            data-channel-name={channel.name}
+            data-channel-number={channel.number}
+            data-channel-logo={channel.logo}
+            data-vod-name={channel.vodPlatform}
+            data-stream-url={channel.streamUrl}
+            onclick="openProgramModal(this)"
+          >
+            <div>
+              <!-- Channel Info Header -->
+              <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-800/80">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-7 bg-slate-800 rounded-lg p-0.5 flex items-center justify-center border border-slate-700/50">
+                    <img src={channel.logo} alt={channel.name} class="max-w-full max-h-full object-contain" loading="lazy" />
+                  </div>
+                  <div>
+                    <span class="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors block leading-none">
+                      {channel.name}
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-mono">
+                      Kanał {channel.number}
+                    </span>
+                  </div>
+                </div>
+
+                <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  {timeFormatted}
+                </span>
+              </div>
+
+              <!-- Main Content -->
+              <div class="flex items-start gap-4">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">
+                      Sport na żywo
+                    </span>
+                    {program.category && (
+                      <span class="text-[10px] text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700/50">
+                        {program.category}
+                      </span>
+                    )}
+                  </div>
+
+                  <h2 class="text-base sm:text-lg font-bold text-white group-hover:text-emerald-300 transition-colors line-clamp-2">
+                    {program.title}
+                  </h2>
+
+                  <p class="text-xs text-slate-400 line-clamp-3 mt-2 leading-relaxed">
+                    {program.description || 'Szczegóły transmisji sportowej dostępne po kliknięciu.'}
+                  </p>
+                </div>
+
+                <!-- Thumbnail -->
+                {cleanImg && (
+                  <div class="w-18 h-20 rounded-xl overflow-hidden bg-slate-800 flex-shrink-0 relative shadow flex items-center justify-center border border-slate-700/50">
+                    <span class="absolute text-lg opacity-20 select-none">🏆</span>
+                    <img 
+                      src={cleanImg} 
+                      alt={program.title} 
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform relative z-10" 
+                      loading="lazy" 
+                      referrerpolicy="no-referrer"
+                      onerror={`if (!this.src.endsWith('${fallbackImg}')) { this.src = '${fallbackImg}'; } else { this.style.display = 'none'; }`}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <!-- Footer Action -->
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+              <span class="text-slate-400">
+                {channel.vodPlatform || 'DVB-T2'}
+              </span>
+              <span class="text-emerald-400 font-bold group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-0.5">
+                Szczegóły transmisji →
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+  </main>
+
+  <ProgramOverlay />
+  <MoodPickerModal />
+  <Footer />
+</BaseLayout>

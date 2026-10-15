@@ -1,0 +1,232 @@
+---
+/**
+ * Channel Schedule Page — TV Wieczór (tvwieczor.pl)
+ * Dynamiczna podstrona ramówki dla każdego kanału DVB-T2: /tvp-1/, /polsat/, /tvn/, /stopklatka/, etc.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ProgramOverlay from '../components/ProgramOverlay.astro';
+import MoodPickerModal from '../components/MoodPickerModal.astro';
+import BookmarkButton from '../components/BookmarkButton.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInPoland, formatDatePL, formatTimePL, getPolandHour } from '../utils/timeSlots';
+import { getFallbackImageForProgram, getCleanProgramImage } from '../utils/programImages';
+import type { Channel, Program } from '../types';
+
+export async function getStaticPaths() {
+  const channels = await fetchChannels();
+  return channels.map((ch) => ({
+    params: { kanal: ch.id },
+    props: { channel: ch },
+  }));
+}
+
+interface Props {
+  channel: Channel;
+}
+
+const { channel } = Astro.props;
+const slug = channel.id;
+const today = getTodayInPoland();
+const dateLabel = formatDatePL(today);
+
+let programs: Program[] = [];
+
+try {
+  const allPrograms = await fetchProgramsForDate(today);
+  programs = allPrograms
+    .filter((p) => p.channel_id === slug)
+    .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+} catch (err) {
+  console.error(`[[kanal].astro] Error fetching programs for ${slug}:`, err);
+}
+
+const pageTitle = `${channel.name} program tv na dziś (Kanał ${channel.number}) | TV Wieczór`;
+const pageDesc = `Sprawdź pełny program telewizyjny dla ${channel.name} na dziś (${dateLabel}). Aktualna ramówka, opisy audycji, oceny filmów IMDb i transmisje online w ${channel.vodPlatform || 'DVB-T2'}.`;
+const keywords = `${channel.name} program tv, ${channel.name} ramówka, program ${channel.name} dzisiaj, ${channel.name} kanał ${channel.number}, co dzisiaj na ${channel.name}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BroadcastService",
+  "name": channel.name,
+  "broadcastChannelId": String(channel.number),
+  "url": `https://tvwieczor.pl/${slug}/`,
+  "inLanguage": "pl-PL",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Polska",
+    "identifier": "PL"
+  },
+  "hasBroadcastEvent": programs.slice(0, 20).map((prog) => ({
+    "@type": "BroadcastEvent",
+    "name": prog.title,
+    "description": prog.description,
+    "startDate": prog.start_time,
+    "endDate": prog.end_time,
+    "inLanguage": "pl-PL"
+  }))
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDesc} keywords={keywords} jsonLd={jsonLd}>
+  <Header />
+
+  <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <!-- Channel Hero Header -->
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 mb-8 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-5">
+        <div class="w-20 h-16 bg-slate-950 rounded-2xl p-2 flex items-center justify-center border border-slate-800 shadow-md">
+          <img 
+            src={channel.logo} 
+            alt={channel.name} 
+            class="max-h-full max-w-full object-contain"
+          />
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs font-mono font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded">
+              DVB-T2 KANAŁ {channel.number}
+            </span>
+            <BookmarkButton channelSlug={slug} />
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white">
+            {channel.name} — Program TV
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            {channel.description || `Bezpłatny ogólnopolski kanał telewizji cyfrowej • ${dateLabel}`}
+          </p>
+        </div>
+      </div>
+
+      <!-- Streaming Link -->
+      {channel.streamUrl && (
+        <a 
+          href={channel.streamUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="shrink-0 px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs sm:text-sm transition-colors flex items-center gap-2 shadow-lg group"
+        >
+          <span class="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
+          <span>Oglądaj w {channel.vodPlatform || 'Internecie'}</span>
+          <span class="opacity-75 group-hover:translate-x-0.5 transition-transform">↗</span>
+        </a>
+      )}
+    </div>
+
+    <!-- Timeline of Programmes -->
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+      <div class="px-6 py-4 bg-slate-850/80 border-b border-slate-800 flex items-center justify-between">
+        <h2 class="text-sm font-extrabold text-white uppercase tracking-wider">
+          Pełna ramówka na dziś ({dateLabel})
+        </h2>
+        <span class="text-xs text-amber-400 font-bold font-mono">
+          {programs.length} pozycji
+        </span>
+      </div>
+
+      <div class="divide-y divide-slate-800/60">
+        {programs.length === 0 ? (
+          <div class="p-12 text-center text-sm text-slate-500">
+            Brak dostępnych danych EPG dla tego kanału na dzień dzisiejszy.
+          </div>
+        ) : (
+          programs.map((prog) => {
+            const timeFormatted = formatTimePL(prog.start_time);
+            const hour = getPolandHour(prog.start_time);
+            const isHit20 = hour === 20;
+            const cleanImg = getCleanProgramImage(prog.image_url, prog.title, prog.category);
+            const fallbackImg = getFallbackImageForProgram(prog.title, prog.category);
+
+            return (
+              <div 
+                class="p-4 sm:p-5 hover:bg-slate-850/60 transition-colors cursor-pointer flex items-center justify-between gap-4 group"
+                data-program-id={prog.id}
+                data-title={prog.title}
+                data-desc={prog.description}
+                data-category={prog.category}
+                data-start={prog.start_time}
+                data-end={prog.end_time}
+                data-imdb={prog.imdb_rating}
+                data-image={cleanImg}
+                data-channel-slug={slug}
+                data-channel-name={channel.name}
+                data-channel-number={channel.number}
+                data-channel-logo={channel.logo}
+                data-vod-name={channel.vodPlatform}
+                data-stream-url={channel.streamUrl}
+                onclick="openProgramModal(this)"
+              >
+                <!-- Left Time -->
+                <div class="flex-shrink-0 w-16 text-center sm:text-left">
+                  <span class="text-sm font-mono font-bold text-amber-400 block">
+                    {timeFormatted}
+                  </span>
+                  {isHit20 && (
+                    <span class="text-[9px] font-bold text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded border border-rose-500/20 block mt-0.5">
+                      Hit 20:00
+                    </span>
+                  )}
+                </div>
+
+                <!-- Center Details -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    {prog.category && (
+                      <span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700/50">
+                        {prog.category}
+                      </span>
+                    )}
+
+                    {prog.imdb_rating && (
+                      <span class="text-[10px] font-extrabold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                        ⭐ {prog.imdb_rating}
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 class="text-base sm:text-lg font-bold text-white group-hover:text-amber-300 transition-colors">
+                    {prog.title}
+                  </h3>
+
+                  {prog.sub_title && (
+                    <p class="text-xs text-slate-400 mt-0.5">
+                      {prog.sub_title}
+                    </p>
+                  )}
+
+                  {prog.description && (
+                    <p class="text-xs text-slate-400 line-clamp-2 mt-1 hidden sm:block leading-relaxed">
+                      {prog.description}
+                    </p>
+                  )}
+                </div>
+
+                <!-- Right Thumbnail -->
+                {cleanImg && (
+                  <div class="w-16 h-14 sm:w-20 sm:h-16 rounded-xl overflow-hidden bg-slate-800 flex-shrink-0 relative flex items-center justify-center border border-slate-700/50">
+                    <span class="absolute text-xs opacity-20 select-none">📺</span>
+                    <img 
+                      src={cleanImg} 
+                      alt={prog.title} 
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform relative z-10" 
+                      loading="lazy" 
+                      referrerpolicy="no-referrer"
+                      onerror={`if (!this.src.endsWith('${fallbackImg}')) { this.src = '${fallbackImg}'; } else { this.style.display = 'none'; }`}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+
+  </main>
+
+  <ProgramOverlay />
+  <MoodPickerModal />
+  <Footer />
+</BaseLayout>

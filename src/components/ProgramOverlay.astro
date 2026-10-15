@@ -1,0 +1,228 @@
+---
+/**
+ * ProgramOverlay component for tvwieczor.pl
+ * Modal overlay with:
+ * 1. Oglądaj na żywo / VoD (TVP VOD, Polsat Box Go, Player, Pilot WP)
+ * 2. Dodaj do kalendarza (Google & Apple iCal)
+ * 3. Opis, kategoria, ocena IMDb ⭐ i czas emisji.
+ */
+---
+
+<div 
+  id="program-modal" 
+  class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-200"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-title"
+>
+  <div 
+    class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-transform duration-200 scale-95 flex flex-col max-h-[92vh]"
+    id="program-modal-card"
+  >
+    <!-- Modal Image / Header -->
+    <div class="relative h-48 bg-slate-850 overflow-hidden flex-shrink-0 flex items-center justify-center">
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-700 select-none">
+        <span class="text-4xl opacity-30">🇵🇱</span>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-600 mt-1">DVB-T2 Polska</span>
+      </div>
+
+      <img 
+        id="modal-image" 
+        src="" 
+        alt="" 
+        class="w-full h-full object-cover hidden relative z-10"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent z-20"></div>
+
+      <!-- Close Button -->
+      <button 
+        type="button" 
+        onclick="closeProgramModal()"
+        class="absolute top-4 right-4 bg-slate-950/70 hover:bg-slate-800 text-slate-300 hover:text-white w-9 h-9 rounded-full flex items-center justify-center border border-slate-700/60 transition-colors z-30 cursor-pointer"
+        aria-label="Zamknij okno"
+      >
+        ✕
+      </button>
+
+      <!-- Channel badge in modal -->
+      <div class="absolute bottom-4 left-6 flex items-center gap-3 z-30">
+        <div class="w-10 h-8 bg-slate-950/80 rounded-lg p-1 flex items-center justify-center border border-slate-700/60">
+          <img id="modal-channel-logo" src="" alt="" class="max-w-full max-h-full object-contain" />
+        </div>
+        <div>
+          <span id="modal-channel-name" class="font-bold text-white text-sm drop-shadow"></span>
+          <span id="modal-channel-number" class="text-[11px] text-amber-400 font-mono font-bold block -mt-0.5"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="p-6 overflow-y-auto flex-1 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-2 mb-2 flex-wrap">
+          <span id="modal-time" class="text-xs font-mono font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded">
+            --:--
+          </span>
+          <span id="modal-category" class="text-xs text-slate-400 font-medium"></span>
+          <span id="modal-imdb" class="text-xs font-bold bg-amber-400/10 text-amber-400 border border-amber-400/30 px-2 py-0.5 rounded hidden"></span>
+        </div>
+
+        <h3 id="modal-title" class="text-2xl font-extrabold text-white mb-3"></h3>
+        <p id="modal-description" class="text-sm text-slate-300 leading-relaxed max-h-40 overflow-y-auto pr-1"></p>
+      </div>
+
+      <!-- Action Buttons: Watch Live / VoD + Add to Calendar -->
+      <div class="mt-6 pt-4 border-t border-slate-800 space-y-3">
+        <div class="flex items-center gap-3">
+          <!-- Watch Live / VoD Button -->
+          <a 
+            id="modal-watch-live-btn"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-bold rounded-2xl transition-colors text-sm shadow-md group"
+          >
+            <span class="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
+            <span id="modal-watch-label">Oglądaj na żywo</span>
+            <span class="text-xs opacity-75 group-hover:translate-x-0.5 transition-transform">↗</span>
+          </a>
+
+          <!-- Add to Calendar -->
+          <button 
+            type="button"
+            id="modal-calendar-btn"
+            onclick="handleAddToCalendar()"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-slate-850 hover:bg-slate-800 text-slate-100 font-bold rounded-2xl border border-slate-700 transition-colors text-sm cursor-pointer"
+          >
+            <span>📅</span>
+            <span>Przypomnienie</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] text-slate-500 px-1">
+          <span>Strefa czasowa: Warszawa (CET)</span>
+          <a id="modal-channel-link" href="#" class="text-amber-400 hover:underline">
+            Zobacz cały kanał →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  let currentModalProgram = null;
+
+  function formatTimePLStr(isoStr) {
+    if (!isoStr) return '--:--';
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString('pl-PL', { timeZone: 'Europe/Warsaw', hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  function openProgramModal(el) {
+    const p = {
+      title: el.getAttribute('data-title'),
+      desc: el.getAttribute('data-desc'),
+      category: el.getAttribute('data-category'),
+      start: el.getAttribute('data-start'),
+      end: el.getAttribute('data-end'),
+      imdb: el.getAttribute('data-imdb'),
+      image: el.getAttribute('data-image'),
+      channelSlug: el.getAttribute('data-channel-slug'),
+      channelName: el.getAttribute('data-channel-name'),
+      channelNumber: el.getAttribute('data-channel-number'),
+      channelLogo: el.getAttribute('data-channel-logo'),
+      vodName: el.getAttribute('data-vod-name'),
+      streamUrl: el.getAttribute('data-stream-url')
+    };
+
+    currentModalProgram = p;
+
+    document.getElementById('modal-title').textContent = p.title || 'Program';
+    document.getElementById('modal-description').textContent = p.desc || 'Brak dodatkowego opisu dla tej pozycji programowej.';
+    document.getElementById('modal-category').textContent = p.category || '';
+    
+    const startTimeFormatted = formatTimePLStr(p.start);
+    const endTimeFormatted = formatTimePLStr(p.end);
+    document.getElementById('modal-time').textContent = `${startTimeFormatted} - ${endTimeFormatted}`;
+
+    const imdbEl = document.getElementById('modal-imdb');
+    if (p.imdb && p.imdb !== 'null' && p.imdb !== 'undefined') {
+      imdbEl.textContent = `⭐ ${p.imdb} IMDb`;
+      imdbEl.classList.remove('hidden');
+    } else {
+      imdbEl.classList.add('hidden');
+    }
+
+    const imgEl = document.getElementById('modal-image');
+    if (p.image && p.image !== 'null') {
+      imgEl.src = p.image;
+      imgEl.alt = p.title;
+      imgEl.classList.remove('hidden');
+    } else {
+      imgEl.classList.add('hidden');
+    }
+
+    document.getElementById('modal-channel-name').textContent = p.channelName;
+    document.getElementById('modal-channel-number').textContent = `Kanał ${p.channelNumber}`;
+    document.getElementById('modal-channel-logo').src = p.channelLogo;
+    document.getElementById('modal-channel-link').href = `/${p.channelSlug}/`;
+
+    const watchBtn = document.getElementById('modal-watch-live-btn');
+    const watchLabel = document.getElementById('modal-watch-label');
+    if (p.streamUrl && p.streamUrl !== 'null') {
+      watchBtn.href = p.streamUrl;
+      watchLabel.textContent = p.vodName ? `Oglądaj w ${p.vodName}` : 'Oglądaj w internecie';
+      watchBtn.classList.remove('hidden');
+    } else {
+      watchBtn.classList.add('hidden');
+    }
+
+    const modal = document.getElementById('program-modal');
+    const card = document.getElementById('program-modal-card');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => {
+      card.classList.remove('scale-95');
+      card.classList.add('scale-100');
+    }, 10);
+
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProgramModal() {
+    const modal = document.getElementById('program-modal');
+    const card = document.getElementById('program-modal-card');
+    if (!modal) return;
+
+    card.classList.remove('scale-100');
+    card.classList.add('scale-95');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+      currentModalProgram = null;
+    }, 150);
+  }
+
+  function handleAddToCalendar() {
+    if (!currentModalProgram || !currentModalProgram.start) return;
+
+    const p = currentModalProgram;
+    const startDate = new Date(p.start);
+    const endDate = p.end ? new Date(p.end) : new Date(startDate.getTime() + 60 * 60 * 1000);
+
+    const fmtGoogle = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const gUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(p.title + ' (' + p.channelName + ')')}&dates=${fmtGoogle(startDate)}/${fmtGoogle(endDate)}&details=${encodeURIComponent(p.desc || '')}&location=${encodeURIComponent(p.channelName + ' DVB-T2')}`;
+
+    window.open(gUrl, '_blank');
+  }
+
+  document.getElementById('program-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'program-modal') closeProgramModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeProgramModal();
+  });
+</script>

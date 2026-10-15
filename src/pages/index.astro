@@ -1,0 +1,164 @@
+---
+/**
+ * Homepage — TV Wieczór (tvwieczor.pl)
+ * Program TV na dziś wieczór — Prime Time (od 20:00) dla Polski (DVB-T2).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ChannelCard from '../components/ChannelCard.astro';
+import ProgramOverlay from '../components/ProgramOverlay.astro';
+import MoodPickerModal from '../components/MoodPickerModal.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInPoland, formatDatePL, getPolandHour } from '../utils/timeSlots';
+import type { Channel, Program } from '../types';
+
+const today = getTodayInPoland();
+const dateLabel = formatDatePL(today);
+
+type ChannelWithSlug = Channel & { slug: string; programs: Program[] };
+let channelsWithPrograms: ChannelWithSlug[] = [];
+
+try {
+  const [channels, allPrograms] = await Promise.all([
+    fetchChannels(),
+    fetchProgramsForDate(today),
+  ]);
+
+  const programsByChannel = new Map<string, Program[]>();
+  for (const prog of allPrograms) {
+    const key = prog.channel_id ?? '';
+    if (!programsByChannel.has(key)) programsByChannel.set(key, []);
+    programsByChannel.get(key)!.push(prog);
+  }
+
+  for (const ch of channels) {
+    const allChPrograms = programsByChannel.get(ch.id) ?? [];
+    if (allChPrograms.length === 0) continue;
+
+    // Filter Prime Time (from 19:30 onwards in Warsaw time through 02:00)
+    const eveningPrograms = allChPrograms
+      .filter((p) => {
+        const hour = getPolandHour(p.start_time);
+        return hour >= 19 || hour <= 2;
+      })
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+    if (eveningPrograms.length > 0) {
+      channelsWithPrograms.push({ ...ch, programs: eveningPrograms, slug: ch.id });
+    }
+  }
+
+  // Sort channels by LCN
+  channelsWithPrograms.sort((a, b) => a.number - b.number);
+} catch (err) {
+  console.error('[index.astro] Error rendering Polish homepage:', err);
+}
+
+const pageTitle = "Program TV na dziś wieczór | TV Wieczór — DVB-T2";
+const pageDesc = "Sprawdź co dzisiaj w TV wieczorem od 20:00. Aktualny program telewizyjny na dziś dla TVP 1, TVP 2, Polsat, TVN i wszystkich 26 stacji naziemnych z ocenami filmów IMDb ⭐.";
+const keywords = "program tv, program tv na dziś, co dzisiaj w tv, co w tv wieczorem, program tv wieczór, filmy dzisiaj w tv, tvp 1 program, polsat program, tvn program";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Program TV na dziś wieczór w Polsce",
+  "description": pageDesc,
+  "inLanguage": "pl-PL",
+  "spatialCoverage": {
+    "@type": "Country",
+    "name": "Polska",
+    "identifier": "PL"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Polska",
+    "identifier": "PL"
+  },
+  "itemListElement": channelsWithPrograms.slice(0, 15).map((ch, idx) => ({
+    "@type": "ListItem",
+    "position": idx + 1,
+    "item": {
+      "@type": "BroadcastService",
+      "name": ch.name,
+      "broadcastChannelId": String(ch.number),
+      "url": `https://tvwieczor.pl/${ch.slug}/`
+    }
+  }))
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDesc} keywords={keywords} jsonLd={jsonLd}>
+  <Header />
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <!-- Hero / Headline Bar -->
+    <div class="mb-8 border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-semibold mb-3">
+          <span>🇵🇱 DVB-T2 Naziemna TV</span>
+          <span>•</span>
+          <span>{dateLabel}</span>
+          <span>•</span>
+          <span class="text-rose-400 font-bold">Hit Wieczoru o 20:00</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Program TV na <span class="text-amber-400">dziś wieczór</span>
+        </h1>
+        <p class="text-base text-slate-400 mt-2 max-w-2xl">
+          Sprawdź ramówkę na wieczór dla TVP 1, TVP 2, Polsatu, TVN i pozostałych kanałów bezpłatnej telewizji cyfrowej.
+        </p>
+      </div>
+
+      <!-- Quick Category Hub Filters -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <a 
+          href="/filmy-dzisiaj/" 
+          class="px-4 py-2 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-colors flex items-center gap-1.5"
+        >
+          <span>🍿</span>
+          <span>Filmy (⭐ IMDb)</span>
+        </a>
+        <a 
+          href="/seriale/" 
+          class="px-4 py-2 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-colors flex items-center gap-1.5"
+        >
+          <span>📺</span>
+          <span>Seriale</span>
+        </a>
+        <a 
+          href="/sport/" 
+          class="px-4 py-2 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-colors flex items-center gap-1.5"
+        >
+          <span>🏆</span>
+          <span>Sport na żywo</span>
+        </a>
+        <a 
+          href="/teraz/" 
+          class="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold transition-colors flex items-center gap-1.5"
+        >
+          <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+          <span>Teraz w TV</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- DVB-T2 Channel Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {channelsWithPrograms.map(ch => (
+        <ChannelCard 
+          channel={ch} 
+          programs={ch.programs} 
+          slug={ch.slug} 
+        />
+      ))}
+    </div>
+
+  </main>
+
+  <ProgramOverlay />
+  <MoodPickerModal />
+  <Footer />
+</BaseLayout>

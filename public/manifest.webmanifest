@@ -1,0 +1,21 @@
+{
+  "name": "TV Wieczór — Program TV na dziś",
+  "short_name": "TV Wieczór",
+  "description": "Najszybszy program telewizyjny w Polsce. Prime time od 20:00 dla TVP 1, TVP 2, Polsat, TVN i 26 bezpłatnych kanałów naziemnych DVB-T2.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

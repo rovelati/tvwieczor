@@ -1,0 +1,64 @@
+---
+/**
+ * Footer component for tvwieczor.pl
+ */
+const todayYear = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-slate-800 bg-slate-950 py-12 text-slate-400 text-xs">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      
+      <!-- Brand & Mission -->
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-2xl">🇵🇱</span>
+          <span class="text-base font-extrabold text-white">TV Wieczór</span>
+        </div>
+        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+          Najszybszy i najczystszy program telewizyjny w Polsce. Przejrzysty repertuar na wieczór (od 20:00) dla TVP 1, TVP 2, Polsat, TVN, TV 4, TV Puls, Stopklatka i wszystkich 26 stacji bezpłatnej Naziemnej Telewizji Cyfrowej (DVB-T2).
+        </p>
+        <p class="text-[11px] text-slate-500 mt-3">
+          Wszystkie godziny emisji podawane są w czasie polskim (Europe/Warsaw, UTC+1 / UTC+2).
+        </p>
+      </div>
+
+      <!-- Quick Navigation -->
+      <div>
+        <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider mb-3">Kategorie</h4>
+        <ul class="space-y-2">
+          <li><a href="/" class="hover:text-amber-400 transition-colors">Program na wieczór (20:00 - 24:00)</a></li>
+          <li><a href="/teraz/" class="hover:text-amber-400 transition-colors">Teraz w TV (Na żywo)</a></li>
+          <li><a href="/filmy-dzisiaj/" class="hover:text-amber-400 transition-colors">Filmy dzisiaj w TV (Oceny IMDb)</a></li>
+          <li><a href="/seriale/" class="hover:text-amber-400 transition-colors">Seriale i telenowele</a></li>
+          <li><a href="/sport/" class="hover:text-amber-400 transition-colors">Sport na żywo w DVB-T2</a></li>
+          <li><a href="/jutro/" class="hover:text-amber-400 transition-colors">Program TV na jutro</a></li>
+        </ul>
+      </div>
+
+      <!-- DVB-T2 Channels -->
+      <div>
+        <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider mb-3">Główne Kanały DVB-T2</h4>
+        <ul class="space-y-2">
+          <li><a href="/tvp-1/" class="hover:text-amber-400 transition-colors">TVP 1 (Kanał 1)</a></li>
+          <li><a href="/tvp-2/" class="hover:text-amber-400 transition-colors">TVP 2 (Kanał 2)</a></li>
+          <li><a href="/polsat/" class="hover:text-amber-400 transition-colors">Polsat (Kanał 4)</a></li>
+          <li><a href="/tvn/" class="hover:text-amber-400 transition-colors">TVN (Kanał 5)</a></li>
+          <li><a href="/tv-4/" class="hover:text-amber-400 transition-colors">TV 4 (Kanał 6)</a></li>
+          <li><a href="/stopklatka/" class="hover:text-amber-400 transition-colors">Stopklatka (Kanał 17)</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+      <div>
+        © {todayYear} TV Wieczór (tvwieczor.pl). Wszelkie prawa zastrzeżone. Logotypy stacji telewizyjnych i tytuły programów należą do ich prawnych właścicieli.
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/polityka-prywatnosci/" class="hover:text-slate-400 transition-colors">Polityka prywatności i cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>

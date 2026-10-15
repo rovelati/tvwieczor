@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const pageTitle = "Nie znaleziono strony (404) | TV Wieczór";
+const pageDesc = "Strona o podanym adresie nie istnieje lub została przeniesiona. Wróć do programu telewizyjnego.";
+---
+
+<BaseLayout title={pageTitle} description={pageDesc} noindex={true}>
+  <Header />
+
+  <main class="flex-1 max-w-2xl mx-auto px-4 py-20 text-center flex flex-col items-center justify-center">
+    <span class="text-7xl mb-4">📺</span>
+    <span class="text-xs font-mono font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded mb-4">
+      BŁĄD 404
+    </span>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+      Brak sygnału dla tej strony
+    </h1>
+    <p class="text-slate-400 text-sm max-w-md mb-8">
+      Podany adres URL nie istnieje lub został zmieniony. Wybierz jedną z poniższych kategorii, aby sprawdzić aktualną ramówkę:
+    </p>
+
+    <div class="flex items-center gap-3 flex-wrap justify-center">
+      <a 
+        href="/" 
+        class="px-5 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-extrabold text-xs transition-colors hover:bg-amber-300"
+      >
+        🌙 Hit Wieczoru (20:00)
+      </a>
+      <a 
+        href="/teraz/" 
+        class="px-5 py-2.5 rounded-xl bg-slate-850 hover:bg-slate-800 text-slate-200 font-bold text-xs border border-slate-700 transition-colors"
+      >
+        🔴 Teraz w TV
+      </a>
+      <a 
+        href="/filmy-dzisiaj/" 
+        class="px-5 py-2.5 rounded-xl bg-slate-850 hover:bg-slate-800 text-slate-200 font-bold text-xs border border-slate-700 transition-colors"
+      >
+        🍿 Filmy dzisiaj
+      </a>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

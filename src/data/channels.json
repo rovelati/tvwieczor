@@ -1,0 +1,262 @@
+[
+  {
+    "id": "tvp-1",
+    "name": "TVP 1",
+    "number": 1,
+    "logo": "/channel-logos/tvp-1.svg",
+    "group": "general",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl/live-tv",
+    "description": "Główny kanał Telewizji Polskiej: wiadomości '19:30', Teatr Telewizji, polskie seriale, publicystyka i kino fabularne."
+  },
+  {
+    "id": "tvp-2",
+    "name": "TVP 2",
+    "number": 2,
+    "logo": "/channel-logos/tvp-2.svg",
+    "group": "general",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl/live-tv",
+    "description": "Drugi program TVP: 'Pytanie na śniadanie', kultowe seriale 'M jak miłość', 'Barwy szczęścia', kabarety i teleturnieje."
+  },
+  {
+    "id": "tvp-3",
+    "name": "TVP 3",
+    "number": 3,
+    "logo": "/channel-logos/tvp-3.svg",
+    "group": "general",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl/live-tv",
+    "description": "Pasmo regionalne TVP łączące 16 ośrodków w całej Polsce: lokalne wiadomości, kultura regionalna i reportaże."
+  },
+  {
+    "id": "polsat",
+    "name": "Polsat",
+    "number": 4,
+    "logo": "/channel-logos/polsat.svg",
+    "group": "general",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Największa polska stacja komercyjna: 'Wydarzenia', mega-hity filmowe w Mega-Hit, widowiska rozrywkowe i sport."
+  },
+  {
+    "id": "tvn",
+    "name": "TVN",
+    "number": 5,
+    "logo": "/channel-logos/tvn.svg",
+    "group": "general",
+    "vodPlatform": "Player",
+    "streamUrl": "https://player.pl",
+    "description": "Lider nowoczesnej telewizji komercyjnej: 'Fakty', 'Dzień Dobry TVN', autorskie seriale premium i światowe formaty reality."
+  },
+  {
+    "id": "tv-4",
+    "name": "TV 4",
+    "number": 6,
+    "logo": "/channel-logos/tv-4.svg",
+    "group": "general",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Czwórka: hitowe seriale policyjne 'Policjantki i Policjanci', 'Sprawiedliwi - Wydział Kryminalny' oraz kino akcji."
+  },
+  {
+    "id": "tv-puls",
+    "name": "TV Puls",
+    "number": 7,
+    "logo": "/channel-logos/tv-puls.svg",
+    "group": "movies",
+    "vodPlatform": "Pilot WP",
+    "streamUrl": "https://pilot.wp.pl",
+    "description": "Trzecia siła komercyjna: flagowy serial 'Lombard. Życie pod zastaw', wielkie hity Hollywood, komedie i animacje."
+  },
+  {
+    "id": "tvn-7",
+    "name": "TVN 7",
+    "number": 8,
+    "logo": "/channel-logos/tvn-7.svg",
+    "group": "series",
+    "vodPlatform": "Player",
+    "streamUrl": "https://player.pl",
+    "description": "Siódemka: doskonałe seriale, filmy obyczajowe i sensacyjne oraz formaty randkowe i młodzieżowe."
+  },
+  {
+    "id": "puls-2",
+    "name": "Puls 2",
+    "number": 9,
+    "logo": "/channel-logos/puls-2.svg",
+    "group": "kids",
+    "vodPlatform": "Pilot WP",
+    "streamUrl": "https://pilot.wp.pl",
+    "description": "Puls 2: pasmo dziecięce 'Puls Kids' za dnia oraz seriale kryminalne, sensacyjne i filmowe wieczory dla dorosłych."
+  },
+  {
+    "id": "tv-6",
+    "name": "TV 6",
+    "number": 10,
+    "logo": "/channel-logos/tv-6.svg",
+    "group": "general",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Szóstka: rozrywka, animacje dla dorosłych, teleturnieje oraz popularne programy lifestyle'owe."
+  },
+  {
+    "id": "super-polsat",
+    "name": "Super Polsat",
+    "number": 11,
+    "logo": "/channel-logos/super-polsat.svg",
+    "group": "general",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Kanał uniwersalny z audiodeskrypcją: najlepsze programy z biblioteki Polsatu, transmisje sportowe i kino familijne."
+  },
+  {
+    "id": "stopklatka",
+    "name": "Stopklatka",
+    "number": 17,
+    "logo": "/channel-logos/stopklatka.svg",
+    "group": "movies",
+    "vodPlatform": "FilmBox+",
+    "streamUrl": "https://filmboxplus.com",
+    "description": "Pierwszy ogólnodostępny kanał filmowy w Polsce: klasyka kina, hollywoodzkie blockbustery i uznane seriale."
+  },
+  {
+    "id": "fokus-tv",
+    "name": "Fokus TV",
+    "number": 18,
+    "logo": "/channel-logos/fokus-tv.svg",
+    "group": "factual",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Kanał edukacyjno-poznawczy: 'Rolnicy. Podlasie', fascynujące serie dokumentalne o historii, technologii i dzikiej przyrodzie."
+  },
+  {
+    "id": "tvp-kultura",
+    "name": "TVP Kultura",
+    "number": 19,
+    "logo": "/channel-logos/tvp-kultura.svg",
+    "group": "movies",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl",
+    "description": "Kultura na najwyższym poziomie: kino autorskie, archiwa festiwalowe, koncerty muzyki poważnej i jazzu, sztuka i debaty."
+  },
+  {
+    "id": "tvp-historia",
+    "name": "TVP Historia",
+    "number": 20,
+    "logo": "/channel-logos/tvp-historia.svg",
+    "group": "factual",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl",
+    "description": "Opowieści o przeszłości: dzieje Polski i świata, wielkie bitwy, tajemnice XX wieku i historyczne filmy fabularne."
+  },
+  {
+    "id": "tvp-dokument",
+    "name": "TVP Dokument",
+    "number": 24,
+    "logo": "/channel-logos/tvp-dokument.svg",
+    "group": "factual",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl",
+    "description": "Najlepsze światowe i polskie filmy dokumentalne: wyprawy geograficzne, sylwetki niezwykłych ludzi i reportaże śledcze."
+  },
+  {
+    "id": "ttv",
+    "name": "TTV",
+    "number": 27,
+    "logo": "/channel-logos/ttv.svg",
+    "group": "general",
+    "vodPlatform": "Player",
+    "streamUrl": "https://player.pl",
+    "description": "Twoja Telewizja: dynamiczne programy społeczne, 'Gogglebox. Przed telewizorem', 'Królowe życia' i 'Express'."
+  },
+  {
+    "id": "zoom-tv",
+    "name": "Zoom TV",
+    "number": 28,
+    "logo": "/channel-logos/zoom-tv.svg",
+    "group": "movies",
+    "vodPlatform": "FilmBox+",
+    "streamUrl": "https://filmboxplus.com",
+    "description": "Uniwersalny kanał rozrywkowy: sensacja, zjawiska paranormalne, dobre kino akcji oraz serie kryminalne."
+  },
+  {
+    "id": "metro",
+    "name": "Metro",
+    "number": 29,
+    "logo": "/channel-logos/metro.svg",
+    "group": "movies",
+    "vodPlatform": "Player",
+    "streamUrl": "https://player.pl",
+    "description": "Kanał grupy Warner Bros. Discovery: pasma filmowe, intrygujące dokumenty i cenione seriale kryminalne."
+  },
+  {
+    "id": "nowa-tv",
+    "name": "Nowa TV",
+    "number": 30,
+    "logo": "/channel-logos/nowa-tv.svg",
+    "group": "series",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Telewizja dla całej rodziny: komedie, polskie i zagraniczne seriale obyczajowe oraz lekkie pasma informacyjne."
+  },
+  {
+    "id": "wp",
+    "name": "Telewizja WP",
+    "number": 31,
+    "logo": "/channel-logos/wp.svg",
+    "group": "general",
+    "vodPlatform": "Pilot WP",
+    "streamUrl": "https://pilot.wp.pl",
+    "description": "Kanał Wirtualnej Polski: autorskie produkcje, reportaże, renowacje domów, seriale kryminalne i publicystyka."
+  },
+  {
+    "id": "tvp-info",
+    "name": "TVP Info",
+    "number": 32,
+    "logo": "/channel-logos/tvp-info.svg",
+    "group": "news",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl",
+    "description": "Całodobowy kanał informacyjny: wiadomości z kraju i ze świata w czasie rzeczywistym, debaty polityczne i relacje na żywo."
+  },
+  {
+    "id": "tvp-sport",
+    "name": "TVP Sport",
+    "number": 33,
+    "logo": "/channel-logos/tvp-sport.svg",
+    "group": "sport",
+    "vodPlatform": "TVP Sport",
+    "streamUrl": "https://sport.tvp.pl/transmisje",
+    "description": "Darmowy sport dla wszystkich: mecze reprezentacji Polski w piłce nożnej, Puchar Świata w skokach narciarskich, lekkoatletyka i boks."
+  },
+  {
+    "id": "tvp-abc",
+    "name": "TVP ABC",
+    "number": 34,
+    "logo": "/channel-logos/tvp-abc.svg",
+    "group": "kids",
+    "vodPlatform": "TVP VOD",
+    "streamUrl": "https://vod.tvp.pl",
+    "description": "Ulubiony kanał najmłodszych: bezpieczne bajki edukacyjne, polska animacja, programy plastyczne i muzyczne."
+  },
+  {
+    "id": "eska-tv",
+    "name": "Eska TV",
+    "number": 38,
+    "logo": "/channel-logos/eska-tv.svg",
+    "group": "music",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Najgorętsze hity muzyczne: teledyski, Gorąca 20, programy rozrywkowe dla młodzieży i styl życia."
+  },
+  {
+    "id": "polo-tv",
+    "name": "Polo TV",
+    "number": 39,
+    "logo": "/channel-logos/polo-tv.svg",
+    "group": "music",
+    "vodPlatform": "Polsat Box Go",
+    "streamUrl": "https://polsatboxgo.pl",
+    "description": "Polska muzyka taneczna: disco polo, dance, biesiada, koncerty festiwalowe i wywiady z gwiazdami sceny."
+  }
+]

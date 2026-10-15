@@ -1,0 +1,26 @@
+# Node & Astro
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+
+# Secrets & Local credentials
+.new-server-passwd
+NUOVO-SERVER.ssh
+.cloudflare-token
+CONTABO-SERVER-RULES.md
+*-credentials.json
+*-service-account.json
+*.pem
+*.key
+
+# System & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
