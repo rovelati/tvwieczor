@@ -133,6 +133,13 @@ KNOWN_POLISH_IMDB = {
     'parasite': 8.5,
 }
 
+def clean_search_title(title: str) -> str:
+    """Strips season numbers, episode tags, times, and punctuation to maximize TMDb hits."""
+    t = re.sub(r'[\s\.:,-]+(\b(odc\.|odcinek|sezon|część|cz\.|pl|seria)\b)?\s*\d+.*$', '', title, flags=re.IGNORECASE).strip()
+    t = re.sub(r'\s+[IVXLCDM]+\s*$', '', t, flags=re.IGNORECASE).strip()
+    t = re.sub(r'\s*\d{1,2}[:\.]\d{2}\s*$', '', t).strip()
+    return t
+
 def load_tmdb_cache() -> dict[str, dict]:
     if os.path.exists(TMDB_CACHE_FILE):
         try:
@@ -149,8 +156,11 @@ def save_tmdb_cache(cache: dict[str, dict]):
     except Exception as e:
         print(f'[fetch-epg-poland] Warning: could not save tmdb cache: {e}')
 
-def query_tmdb(title: str, is_film: bool, cache: dict[str, dict]) -> tuple[float | None, str | None]:
-    clean_title = re.sub(r'\s*\b(odc\.|odcinek|sezon|część|cz\.)\s*\d+.*$', '', title, flags=re.IGNORECASE).strip()
+def query_tmdb(title: str, cache: dict[str, dict]) -> tuple[float | None, str | None]:
+    clean_title = clean_search_title(title)
+    if not clean_title or len(clean_title) < 2:
+        return None, None
+
     cache_key = clean_title.lower()
 
     if cache_key in cache:
@@ -165,8 +175,8 @@ def query_tmdb(title: str, is_film: bool, cache: dict[str, dict]) -> tuple[float
     if not TMDB_API_KEY:
         return None, None
 
-    endpoint = 'movie' if is_film else 'multi'
-    url = f'https://api.themoviedb.org/3/search/{endpoint}?api_key={TMDB_API_KEY}&query={urllib.parse.quote(clean_title)}&language=pl-PL'
+    # Multi search covers movies, tv series, documentaries and entertainment shows
+    url = f'https://api.themoviedb.org/3/search/multi?api_key={TMDB_API_KEY}&query={urllib.parse.quote(clean_title)}&language=pl-PL'
 
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'tvwieczor-bot/1.0'})
@@ -174,7 +184,15 @@ def query_tmdb(title: str, is_film: bool, cache: dict[str, dict]) -> tuple[float
             data = json.loads(resp.read().decode('utf-8'))
             results = data.get('results', [])
             if results:
-                top = results[0]
+                # Find the best result with a poster
+                top = None
+                for r in results:
+                    if r.get('poster_path'):
+                        top = r
+                        break
+                if not top:
+                    top = results[0]
+
                 vote_avg = top.get('vote_average')
                 poster_path = top.get('poster_path')
                 rating = round(vote_avg, 1) if vote_avg and vote_avg > 0 else None
@@ -266,7 +284,7 @@ def main() -> int:
     seen_slots: set[tuple[str, str]] = set()  # (channel_id, start_time) to deduplicate SD/HD duplicates
     prog_counter = 1
     tmdb_queries_count = 0
-    max_tmdb_queries = 80  # Rate-limit new queries per build run to stay fast
+    max_tmdb_queries = 600  # Generous budget to enrich hundreds of titles
 
     for p in root.findall('programme'):
         raw_chid = p.get('channel', '')
@@ -306,21 +324,21 @@ def main() -> int:
         imdb_rating = None
         poster_url = icon_url
 
-        # TMDb enrichment for films & series
-        if is_film or is_series:
-            clean_title = re.sub(r'\s*\b(odc\.|odcinek|sezon|część|cz\.)\s*\d+.*$', '', title, flags=re.IGNORECASE).strip()
-            cache_key = clean_title.lower()
-            if cache_key in tmdb_cache:
-                imdb_rating = tmdb_cache[cache_key].get('rating')
-                if not poster_url and tmdb_cache[cache_key].get('poster'):
-                    poster_url = tmdb_cache[cache_key].get('poster')
-            elif tmdb_queries_count < max_tmdb_queries:
+        # Check TMDb cache or query TMDb for films, series, and top entertainment
+        clean_key = clean_search_title(title).lower()
+        if clean_key:
+            if clean_key in tmdb_cache:
+                imdb_rating = tmdb_cache[clean_key].get('rating')
+                if not poster_url and tmdb_cache[clean_key].get('poster'):
+                    poster_url = tmdb_cache[clean_key].get('poster')
+            elif tmdb_queries_count < max_tmdb_queries and len(clean_key) > 2:
+                # Query TMDb multi
                 tmdb_queries_count += 1
-                rating, tmdb_poster = query_tmdb(title, is_film, tmdb_cache)
+                rating, tmdb_poster = query_tmdb(title, tmdb_cache)
                 imdb_rating = rating
                 if not poster_url and tmdb_poster:
                     poster_url = tmdb_poster
-                time.sleep(0.05)  # brief polite pause
+                time.sleep(0.025)
 
         # Realistic fallback rating for classified films without TMDb match
         if is_film and imdb_rating is None:
@@ -358,6 +376,7 @@ def main() -> int:
 
     size_mb = os.path.getsize(OUTPUT_FILE) / (1024 * 1024)
     print(f'[fetch-epg-poland] SUCCESS: Matched {len(channels_meta)} channels and {len(programmes)} programmes.')
+    print(f'[fetch-epg-poland] Performed {tmdb_queries_count} new TMDb searches. Total cached: {len(tmdb_cache)} titles.')
     print(f'[fetch-epg-poland] Saved minified snapshot to {OUTPUT_FILE} ({size_mb:.2f} MB).')
     return 0
 
