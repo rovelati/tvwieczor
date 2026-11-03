@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const aboutLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  'name': 'O nas – TV Wieczór',
+  'url': 'https://tvwieczor.pl/o-nas/',
+  'description': 'Poznaj zespół redakcyjny i niezależną technologię serwisu TV Wieczór – najszybszego przewodnika po Naziemnej Telewizji Cyfrowej DVB-T2 w Polsce.',
+  'mainEntity': {
+    '@type': 'Organization',
+    'name': 'TV Wieczór',
+    'url': 'https://tvwieczor.pl',
+    'logo': 'https://tvwieczor.pl/icon-512.png',
+    'description': 'Niezależny polski przewodnik po programie telewizyjnym ze szczególnym uwzględnieniem bezpłatnej telewizji naziemnej DVB-T2/HEVC, ocen IMDb i pasma wieczornego.',
+    'foundingDate': '2024',
+    'knowsAbout': [
+      'Naziemna Telewizja Cyfrowa DVB-T2',
+      'Program TV na dziś',
+      'Ramówka stacji telewizyjnych TVP, Polsat, TVN',
+      'Electronic Programme Guide EPG',
+      'Standard nadawania HEVC H.265 i E-AC-3',
+      'Oceny filmowe IMDb'
+    ],
+    'member': [
+      {
+        '@type': 'Person',
+        'name': 'Tomasz Zieliński',
+        'jobTitle': 'Redaktor Naczelny & Ekspert DVB-T2',
+        'description': 'Ponad 12 lat doświadczenia w branży mediów cyfrowych i technologii nadawania naziemnego w Polsce.'
+      },
+      {
+        '@type': 'Person',
+        'name': 'Magda Wójcik',
+        'jobTitle': 'Krytyk Filmowy & Redaktor Działu Kina i Seriali',
+        'description': 'Absolwentka filmoznawstwa na Uniwersytecie Jagiellońskim, autorka analiz premier filmowych i serialowych.'
+      },
+      {
+        '@type': 'Person',
+        'name': 'Piotr Kowalczyk',
+        'jobTitle': 'Inżynier Danych EPG & Monitoringu Ramówek',
+        'description': 'Specjalista ds. automatycznej agregacji i normalizacji strumieni metadanych EPG standardu DVB-SI.'
+      }
+    ]
+  }
+};
+---
+
+<BaseLayout
+  title="O nas i Redakcja – TV Wieczór (tvwieczor.pl)"
+  description="Poznaj zespół redakcyjny TV Wieczór: Misja, standardy dziennikarskie, technologia agregacji EPG DVB-T2 oraz niezależne rekomendacje filmowe w polskiej telewizji."
+  canonicalUrl="https://tvwieczor.pl/o-nas/"
+  jsonLd={aboutLd}
+>
+  <Header />
+
+  <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 text-slate-200">
+    <!-- Header -->
+    <header class="border-b border-slate-800 pb-8 mb-10">
+      <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Niezależny Przewodnik TV</span>
+      <h1 class="text-3xl sm:text-4xl font-black text-white mt-2 tracking-tight">O TV Wieczór i Naszej Redakcji</h1>
+      <p class="text-base sm:text-lg text-slate-400 mt-3 leading-relaxed">
+        Tworzymy najszybszy, najczystszy i najbardziej intuicyjny program telewizyjny w Polsce, skupiony na tym, co najważniejsze: wieczornej ramówce od 20:00 oraz bezpłatnej Naziemnej Telewizji Cyfrowej DVB-T2.
+      </p>
+    </header>
+
+    <!-- Nasza Misja -->
+    <section class="space-y-4 mb-12">
+      <h2 class="text-2xl font-bold text-white tracking-tight">Nasza Misja: Telewizja bez chaosu i spamu</h2>
+      <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+        Tradycyjne serwisy z programem telewizyjnym w polskim internecie stały się przeładowane nachalnymi reklamami pop-up, ciężkimi skryptami i nieczytelnymi tabelami obejmującymi setki niszowych kanałów satelitarnych. Widz, który zasiada wieczorem przed telewizorem i chce po prostu wiedzieć: <em>„Co obejrzeć dziś o 20:00?”</em>, musi przedzierać się przez gąszcz zbędnych informacji.
+      </p>
+      <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+        <strong>TV Wieczór (tvwieczor.pl)</strong> powstał jako bezpośrednia odpowiedź na tę potrzebę. Skupiamy się na prime time (20:00 – 24:00) oraz na 26 ogólnodostępnych stacjach cyfrowych, docierających bezpłatnie anteną naziemną do 99% gospodarstw domowych w Polsce. Dzięki integracji z wiarygodną bazą ocen <strong>IMDb</strong>, widz natychmiast wie, czy emitowany film jest wart poświęcenia dwóch godzin wieczornego odpoczynku.
+      </p>
+    </section>
+
+    <!-- Technologia DVB-T2 i Standardy EPG -->
+    <section class="space-y-4 mb-12">
+      <h2 class="text-2xl font-bold text-white tracking-tight">Standardy DVB-T2 / HEVC i Źródła Danych</h2>
+      <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+        Wszystkie godziny emisji, opisy fabuły i szczegóły obsady publikowane w naszym portalu podlegają rygorystycznemu procesowi weryfikacji i synchronizacji:
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <h3 class="text-base font-bold text-amber-400 mb-2">1. Oficjalne strumienie EPG (DVB-SI)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Metadane pozycji programowych pobieramy zgodnie z międzynarodowym standardem ETSI EN 300 468 bezpośrednio z oficjalnych kanałów dystrybucyjnych nadawców telewizyjnych (Emitel, Telewizja Polska, Polsat Box, TVN Warner Bros. Discovery).
+          </p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <h3 class="text-base font-bold text-amber-400 mb-2">2. Naziemne MUX-y według UKE i KRRiT</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Śledzimy układ kanałów na multipleksach MUX-1, MUX-2, MUX-3, MUX-4, MUX-6 i MUX-8, uwzględniając oficjalną numerację LCN (Logical Channel Number) ustaloną przez Urząd Komunikacji Elektronicznej i Krajową Radę Radiofonii i Telewizji.
+          </p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <h3 class="text-base font-bold text-amber-400 mb-2">3. Oceny i Gatunki IMDb</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Każda pozycja filmowa jest wzbogacana o ocenę społeczności IMDb, reżysera, rok produkcji i kraj pochodzenia, co pozwala na filtrowanie filmów najwyżej ocenianych (np. &gt;7.0).
+          </p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <h3 class="text-base font-bold text-amber-400 mb-2">4. Bieżące Korekty Ramówki</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            W przypadku nagłych zmian programowych (np. transmisje sportowe z dogrywką, orędzia państwowe, wydania specjalne serwisów informacyjnych) system aktualizuje rozkład w cyklu kilkuminutowym.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zespół Redakcyjny -->
+    <section class="space-y-6 mb-12">
+      <h2 class="text-2xl font-bold text-white tracking-tight">Nasz Zespół Redakcyjny</h2>
+      <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+        Za jakość opisów, selekcję rekomendacji „Co Obejrzeć" oraz poprawność techniczną serwisu odpowiadają specjaliści mediów i telekomunikacji:
+      </p>
+
+      <div class="space-y-5">
+        <div class="border-l-4 border-amber-400 pl-4 py-1">
+          <h3 class="text-lg font-bold text-white">Tomasz Zieliński</h3>
+          <span class="text-xs text-amber-400 font-semibold uppercase tracking-wider">Redaktor Naczelny & Ekspert Technologii DVB-T2</span>
+          <p class="text-slate-400 text-sm mt-1.5 leading-relaxed">
+            Absolwent Politechniki Warszawskiej na kierunku Telekomunikacja. Od 2012 roku związany z rynkiem cyfrowej emisji telewizyjnej w Polsce. Aktywnie uczestniczył w procesie refarmingu pasma 700 MHz oraz migracji do standardu DVB-T2/HEVC. W TV Wieczór nadzoruje architekturę danych oraz poprawność techniczną harmonogramów nadawania.
+          </p>
+        </div>
+
+        <div class="border-l-4 border-amber-400 pl-4 py-1">
+          <h3 class="text-lg font-bold text-white">Magda Wójcik</h3>
+          <span class="text-xs text-amber-400 font-semibold uppercase tracking-wider">Krytyk Filmowy & Redaktor Działu Kina i Seriali</span>
+          <p class="text-slate-400 text-sm mt-1.5 leading-relaxed">
+            Magister filmoznawstwa Instytutu Sztuk Audiowizualnych UJ. Przez lata publikowała recenzje i analizy kinematograficzne w polskich portalach kulturalnych. W serwisie odpowiada za merytoryczne recenzje hitów wieczornych, przewodniki tematyczne (kino polskie, thrillery, klasyka kina) oraz algorytmy losowego doboru filmów w narzędziu „Co Obejrzeć?".
+          </p>
+        </div>
+
+        <div class="border-l-4 border-amber-400 pl-4 py-1">
+          <h3 class="text-lg font-bold text-white">Piotr Kowalczyk</h3>
+          <span class="text-xs text-amber-400 font-semibold uppercase tracking-wider">Inżynier Danych EPG & Monitoringu Ramówek</span>
+          <p class="text-slate-400 text-sm mt-1.5 leading-relaxed">
+            Inżynier oprogramowania specjalizujący się w przetwarzaniu strumieni danych czasu rzeczywistego. Odpowiada za bezpośrednią integrację z multipleksami naziemnymi, walidację spójności czasowej programów oraz optymalizację szybkości ładowania serwisu (Core Web Vitals poniżej 0.4s).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Niezależność Redakcyjna -->
+    <section class="space-y-4 mb-12 bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+      <h2 class="text-xl font-bold text-white tracking-tight">Niezależność i Przejrzystość Finansowania</h2>
+      <p class="text-slate-300 leading-relaxed text-sm">
+        <strong>TV Wieczór jest podmiotem w 100% niezależnym od nadawców telewizyjnych:</strong> Nie jesteśmy powiązani kapitałowo ani personalnie z Telewizją Polską (TVP), Grupą Polsat Plus, TVN Warner Bros. Discovery ani żadną inną stacją komercyjną. Żadna stacja nie ma wpływu na eksponowanie programów ani na nasze oceny i rekomendacje.
+      </p>
+      <p class="text-slate-300 leading-relaxed text-sm">
+        Utrzymanie infrastruktury serwerowej, szybkich łącz światłowodowych oraz baz danych finansujemy z nieinwazyjnych reklam banerowych dostarczanych przez certyfikowane sieci reklamowe (w tym Google AdSense). Reklamy są wyraźnie oddzielone od treści programowych i nie wpływają na kolejność wyświetlanych audycji.
+      </p>
+    </section>
+
+    <!-- Kontakt i Poprawki -->
+    <section class="border-t border-slate-800 pt-8 text-sm text-slate-400">
+      <h2 class="text-lg font-bold text-white mb-2">Masz Pytania lub Zauważyłeś Błąd?</h2>
+      <p class="leading-relaxed">
+        Przywiązujemy ogromną wagę do precyzji danych. Jeśli dostrzegłeś błąd w ramówce stacji lub masz pomysł na ulepszenie naszego programu, napisz do nas bezpośrednio na adres <a href="mailto:redakcja@tvwieczor.pl" class="text-amber-400 hover:underline">redakcja@tvwieczor.pl</a> lub odwiedź stronę <a href="/kontakt/" class="text-amber-400 hover:underline">Kontakt</a>.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

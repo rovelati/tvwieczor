@@ -1,2 +1,9 @@
 https://www.tvwieczor.pl/* https://tvwieczor.pl/:splat 301!
 /sitemap.xml /sitemap-index.xml 301
+/about /o-nas/ 301
+/about/ /o-nas/ 301
+/contact /kontakt/ 301
+/contact/ /kontakt/ 301
+/chi-siamo /o-nas/ 301
+/contatti /kontakt/ 301
+/a-propos /o-nas/ 301

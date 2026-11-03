@@ -93,6 +93,119 @@ import '../styles/global.css';
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
+    <!-- Google Consent Mode v2 (Deny by default) -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'wait_for_update': 500
+      });
+    </script>
+
+    <!-- UniConsent CMP (Consent Management Platform IAB TCF 2.2 / Google Consent Mode v2) -->
+    <link rel="dns-prefetch" href="https://cmp.uniconsent.com" />
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+    <script is:inline src="https://cmp.uniconsent.com/v2/stub.min.js"></script>
+    <script is:inline src="https://cmp.uniconsent.com/v2/stubgcm.min.js"></script>
+
+    <!-- Personalizacja Brand i Konfiguracja CMP TV Wieczór -->
+    <script is:inline>
+      window.__unic_config_v2 = {
+        company: 'TVWieczor.pl',
+        site_name: 'TV Wieczór',
+        brand: 'TVWieczor.pl',
+        country: 'PL',
+        publisherCountryCode: 'PL',
+        lang: 'pl',
+        unic_company: 'TVWieczor.pl',
+        unic_logo: '',
+        unic_policy_url: 'https://tvwieczor.pl/polityka-prywatnosci/',
+        unic_language: 'PL',
+        unic_barmode: 0
+      };
+
+      (function() {
+        const _origFetch = window.fetch;
+        if (_origFetch) {
+          window.fetch = function(url, opts) {
+            try {
+              const urlStr = typeof url === 'string' ? url : (url && url.url ? url.url : '');
+              if (urlStr.includes('uniconsent.com') && (urlStr.includes('/config') || urlStr.includes('/geo'))) {
+                return _origFetch.apply(this, arguments).then(function(res) {
+                  return res.clone().text().then(function(txt) {
+                    try {
+                      let data = JSON.parse(txt);
+                      data.company = 'TVWieczor.pl';
+                      data.brand = 'TV Wieczór';
+                      data.site_name = 'TV Wieczór';
+                      data.country = 'PL';
+                      data.lang = 'pl';
+                      if (data.config) {
+                        data.config.company = 'TVWieczor.pl';
+                        data.config.brand = 'TV Wieczór';
+                        data.config.country = 'PL';
+                        data.config.lang = 'pl';
+                      }
+                      return new Response(JSON.stringify(data), {
+                        status: res.status,
+                        statusText: res.statusText,
+                        headers: res.headers
+                      });
+                    } catch(e) {
+                      return res;
+                    }
+                  });
+                });
+              }
+            } catch(e) {}
+            return _origFetch.apply(this, arguments);
+          };
+        }
+      })();
+    </script>
+    <script async src="https://cmp.uniconsent.com/v2/e538d9903a/cmp.js"></script>
+
+    <!-- Google AdSense -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2168172914069272"
+      crossorigin="anonymous"
+    ></script>
+
+    <style is:inline>
+      #unicmp, .unic, .unic-bar, .unic-modal {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      }
+      .unic .unic-bar, .unic-bar {
+        border-top: 3px solid #f59e0b !important;
+        background: #020617 !important;
+        color: #f8fafc !important;
+        box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.4) !important;
+      }
+      .unic .unic-bar-sheet__title,
+      .unic .uniclogo,
+      .unic strong:first-child {
+        color: #fbbf24 !important;
+        font-weight: 800 !important;
+      }
+      .unic button.unic-bar-dark__btn--primary,
+      .unic .unic-bar-sheet__btn:last-child,
+      .unic button[class*="primary"],
+      .unic-actions button:last-child,
+      .unic-bar button:last-child,
+      #unicmp button.primary {
+        background: #f59e0b !important;
+        color: #020617 !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 800 !important;
+      }
+    </style>
+
     <!-- Schema.org JSON-LD Structured Data -->
     {jsonLd && (
       Array.isArray(jsonLd) ? (

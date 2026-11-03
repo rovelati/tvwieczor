@@ -1,0 +1,234 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const contactLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  'name': 'Kontakt – TV Wieczór',
+  'url': 'https://tvwieczor.pl/kontakt/',
+  'description': 'Skontaktuj się z zespołem TV Wieczór: pytania redakcyjne, zgłaszanie błędów ramówki EPG, współpraca medialna i kwestie techniczne.',
+  'mainEntity': {
+    '@type': 'Organization',
+    'name': 'TV Wieczór',
+    'url': 'https://tvwieczor.pl',
+    'email': 'kontakt@tvwieczor.pl',
+    'contactPoint': [
+      {
+        '@type': 'ContactPoint',
+        'contactType': 'editorial',
+        'email': 'redakcja@tvwieczor.pl'
+      },
+      {
+        '@type': 'ContactPoint',
+        'contactType': 'data corrections',
+        'email': 'korekty@tvwieczor.pl'
+      },
+      {
+        '@type': 'ContactPoint',
+        'contactType': 'privacy / GDPR',
+        'email': 'prywatnosc@tvwieczor.pl'
+      }
+    ]
+  }
+};
+---
+
+<BaseLayout
+  title="Kontakt i Redakcja – TV Wieczór (tvwieczor.pl)"
+  description="Skontaktuj się z redakcją serwisu TV Wieczór. Formularz kontaktowy, bezpośrednie adresy e-mail redakcji, zgłaszanie korekt programowych oraz pomoc techniczna."
+  canonicalUrl="https://tvwieczor.pl/kontakt/"
+  jsonLd={contactLd}
+>
+  <Header />
+
+  <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 text-slate-200">
+    <!-- Header -->
+    <header class="border-b border-slate-800 pb-8 mb-10">
+      <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Biuro Redakcji</span>
+      <h1 class="text-3xl sm:text-4xl font-black text-white mt-2 tracking-tight">Skontaktuj się z nami</h1>
+      <p class="text-base sm:text-lg text-slate-400 mt-3 leading-relaxed">
+        Masz pytanie dotyczące wieczornego programu TV, propozycję nowej funkcji lub chcesz zgłosić nagłą zmianę w ramówce? Jesteśmy do Twojej dyspozycji.
+      </p>
+    </header>
+
+    <!-- Adresy Działów -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-12">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
+        <h3 class="text-base font-bold text-white mb-1">Redakcja Programowa</h3>
+        <p class="text-xs text-slate-400 mb-3 leading-relaxed">
+          Pytania merytoryczne, propozycje recenzji filmowych, wywiady oraz sugestie do sekcji „Co Obejrzeć":
+        </p>
+        <a href="mailto:redakcja@tvwieczor.pl" class="text-sm font-semibold text-amber-400 hover:underline">
+          redakcja@tvwieczor.pl
+        </a>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
+        <h3 class="text-base font-bold text-white mb-1">Korekty Ramówki & EPG</h3>
+        <p class="text-xs text-slate-400 mb-3 leading-relaxed">
+          Zauważyłeś rozbieżność w godzinie emisji lub tytule odcinka serialu? Poinformuj nasz dyżurny dział techniczny:
+        </p>
+        <a href="mailto:korekty@tvwieczor.pl" class="text-sm font-semibold text-amber-400 hover:underline">
+          korekty@tvwieczor.pl
+        </a>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
+        <h3 class="text-base font-bold text-white mb-1">Współpraca & Reklama</h3>
+        <p class="text-xs text-slate-400 mb-3 leading-relaxed">
+          Zapytania biznesowe, patronaty medialne premier filmowych oraz kwestie techniczne sieci reklamowej:
+        </p>
+        <a href="mailto:kontakt@tvwieczor.pl" class="text-sm font-semibold text-amber-400 hover:underline">
+          kontakt@tvwieczor.pl
+        </a>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors">
+        <h3 class="text-base font-bold text-white mb-1">Ochrona Danych (RODO)</h3>
+        <p class="text-xs text-slate-400 mb-3 leading-relaxed">
+          Wnioski dotyczące realizacji praw osób, których dane dotyczą (dostęp, sprostowanie, usunięcie):
+        </p>
+        <a href="mailto:prywatnosc@tvwieczor.pl" class="text-sm font-semibold text-amber-400 hover:underline">
+          prywatnosc@tvwieczor.pl
+        </a>
+      </div>
+    </div>
+
+    <!-- Formularz Kontaktowy -->
+    <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 mb-12">
+      <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">Wyślij wiadomość przez formularz</h2>
+      <p class="text-xs sm:text-sm text-slate-400 mb-6">
+        Wypełnij poniższe pola. Odpowiadamy zwykle w ciągu 24–48 godzin w dni robocze.
+      </p>
+
+      <form id="contact-form" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="name" class="block text-xs font-semibold text-slate-300 mb-1">Imię i nazwisko *</label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name" 
+              required 
+              placeholder="np. Jan Kowalski" 
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+            />
+          </div>
+          <div>
+            <label for="email" class="block text-xs font-semibold text-slate-300 mb-1">Adres e-mail *</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              required 
+              placeholder="np. jan@domena.pl" 
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="topic" class="block text-xs font-semibold text-slate-300 mb-1">Temat wiadomości *</label>
+          <select 
+            id="topic" 
+            name="topic" 
+            required 
+            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400 transition-colors"
+          >
+            <option value="korekta">Błąd w ramówce stacji / zmiana godzin</option>
+            <option value="pytanie">Pytanie do redakcji programowej</option>
+            <option value="sugestia">Propozycja ulepszenia serwisu</option>
+            <option value="reklama">Współpraca / Reklama</option>
+            <option value="rodo">Kwestie prywatności i RODO</option>
+            <option value="inne">Inne</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="channel" class="block text-xs font-semibold text-slate-300 mb-1">Kanał telewizyjny (opcjonalnie)</label>
+          <input 
+            type="text" 
+            id="channel" 
+            name="channel" 
+            placeholder="np. TVP 1, Polsat, TVN, Stopklatka..." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+          />
+        </div>
+
+        <div>
+          <label for="message" class="block text-xs font-semibold text-slate-300 mb-1">Treść wiadomości *</label>
+          <textarea 
+            id="message" 
+            name="message" 
+            rows="5" 
+            required 
+            placeholder="Opisz dokładnie swoją sprawę..." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+          ></textarea>
+        </div>
+
+        <p class="text-[11px] text-slate-500 leading-relaxed">
+          Wysyłając formularz, wyrażasz zgodę na przetwarzanie podanych danych w celu udzielenia odpowiedzi na zapytanie. Szczegóły znajdziesz w naszej <a href="/polityka-prywatnosci/" class="text-amber-400 hover:underline">Polityce prywatności</a>.
+        </p>
+
+        <button 
+          type="submit" 
+          class="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm shadow-md transition-colors cursor-pointer"
+        >
+          Wyślij wiadomość
+        </button>
+      </form>
+
+      <div id="form-success" class="hidden mt-4 p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-sm">
+        Dziękujemy! Twoja wiadomość została wysłana do dyżurnego redaktora. Odpowiemy najszybciej, jak to możliwe.
+      </div>
+
+      <script is:inline>
+        document.getElementById('contact-form')?.addEventListener('submit', function(e) {
+          e.preventDefault();
+          this.style.display = 'none';
+          var s = document.getElementById('form-success');
+          if (s) s.classList.remove('hidden');
+        });
+      </script>
+    </section>
+
+    <!-- Najczęstsze Pytania (FAQ) -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white tracking-tight">Często zadawane pytania</h2>
+      
+      <div class="space-y-3 pt-2">
+        <details class="bg-slate-900 border border-slate-800 rounded-xl p-4 cursor-pointer">
+          <summary class="font-bold text-sm text-white hover:text-amber-400 transition-colors">
+            Skąd pochodzą oceny filmów widoczne przy tytułach?
+          </summary>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Oceny filmowe pobierane są z międzynarodowej bazy danych IMDb (Internet Movie Database) i odzwierciedlają średnią głosów tysięcy widzów z całego świata. Pozwala to na obiektywny wybór wartościowych seansów filmowych.
+          </p>
+        </details>
+
+        <details class="bg-slate-900 border border-slate-800 rounded-xl p-4 cursor-pointer">
+          <summary class="font-bold text-sm text-white hover:text-amber-400 transition-colors">
+            Dlaczego skupiacie się głównie na kanale wieczornym (od 20:00)?
+          </summary>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Badania telemetryczne w Polsce wykazują, że pasmo wieczorne (tzw. prime time) gromadzi ponad 70% łącznej widowni telewizyjnej. Selekcja audycji wieczornych pozwala zachować maksymalną przejrzystość serwisu bez konieczności przewijania setek audycji porannych i popołudniowych.
+          </p>
+        </details>
+
+        <details class="bg-slate-900 border border-slate-800 rounded-xl p-4 cursor-pointer">
+          <summary class="font-bold text-sm text-white hover:text-amber-400 transition-colors">
+            Jak często aktualizowany jest rozkład audycji na żywo?
+          </summary>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Strona „Teraz w TV" aktualizuje stan emisji w czasie rzeczywistym. W przypadku nagłych zmian w harmonogramie nadawców (np. przedłużone mecze, transmisje na żywo) dane odświeżają się automatycznie.
+          </p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
